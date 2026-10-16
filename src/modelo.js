@@ -102,14 +102,39 @@ export class NotasModelo {
     return nuevaEvaluacion;
   }
   // ---------------------------------------------------------------- 2B · Calificar y eliminar
+ // ---------------------------------------------------------------- 2B · Calificar y eliminar
   calificar(id, nota) {
-    // TODO 2B: la nota puede ser null (quitar) o un número entre 0 y 5. Si el id no existe → ErrorDeReglas.
-    throw new Error('TODO 2B · calificar()');
+    const evaluacion = this.#evaluaciones.find((e) => e.id === Number(id));
+
+    if (!evaluacion) {
+      throw new ErrorDeReglas('No existe la evaluación.');
+    }
+
+    let notaValida = null;
+    if (nota !== null && nota !== undefined && nota !== '') {
+      notaValida = Number(nota);
+      if (isNaN(notaValida) || notaValida < 0 || notaValida > 5) {
+        throw new ErrorDeReglas('La nota debe estar entre 0 y 5.');
+      }
+    }
+
+    evaluacion.nota = notaValida;
+    this.#cambio();
+
+    return evaluacion;
   }
 
   eliminar(id) {
-    // TODO 2B: quita la evaluación. Si el id no existe → ErrorDeReglas.
-    throw new Error('TODO 2B · eliminar()');
+    const index = this.#evaluaciones.findIndex((e) => e.id === Number(id));
+
+    if (index === -1) {
+      throw new ErrorDeReglas('No existe la evaluación.');
+    }
+
+    const [eliminada] = this.#evaluaciones.splice(index, 1);
+    this.#cambio();
+
+    return eliminada;
   }
 
   // ---------------------------------------------------------------- 2C · Resumen
