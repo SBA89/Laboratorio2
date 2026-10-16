@@ -50,13 +50,57 @@ export class NotasModelo {
   }
 
   // ---------------------------------------------------------------- 2A · Agregar y validar
-  agregar({ nombre, peso, nota = null }) {
-    // TODO 2A: valida, EN ESTE ORDEN: nombre, peso, nota y suma de pesos (mensajes en la guía).
-    //          Si todo está bien: crea { id, nombre, peso, nota }, agrégalo y llama a this.#cambio().
-    //          Si algo está mal: lanza new ErrorDeReglas('...') SIN cambiar nada.
-    throw new Error('TODO 2A · agregar()');
-  }
+  // ---------------------------------------------------------------- 2A · Agregar y validar
+  // ---------------------------------------------------------------- 2A · Agregar y validar
+  // ---------------------------------------------------------------- 2A · Agregar y validar
+  // ---------------------------------------------------------------- 2A · Agregar y validar
+  agregar({ nombre, peso, nota } = {}) {
+    // 1. Limpiar espacios en blanco del nombre
+    const nombreLimpio = typeof nombre === 'string' ? nombre.trim() : '';
 
+    // 2. Validar nombre
+    if (!nombreLimpio) {
+      throw new ErrorDeReglas("El nombre es obligatorio.");
+    }
+    if (nombreLimpio.length > MAX_NOMBRE) {
+      throw new ErrorDeReglas("El nombre no puede superar 40 caracteres.");
+    }
+
+    // 3. Validar peso
+    const pesoNum = Number(peso);
+    if (peso === undefined || peso === null || isNaN(pesoNum) || pesoNum < 1 || pesoNum > 100) {
+      throw new ErrorDeReglas("El peso debe estar entre 1 y 100.");
+    }
+
+    // 4. Validar nota
+    let notaValida = null;
+    if (nota !== null && nota !== undefined && nota !== '') {
+      notaValida = Number(nota);
+      if (isNaN(notaValida) || notaValida < 0 || notaValida > 5) {
+        throw new ErrorDeReglas("La nota debe estar entre 0 y 5.");
+      }
+    }
+
+    // 5. Validar suma total de pesos
+    const pesoActualTotal = this.#evaluaciones.reduce((sum, e) => sum + e.peso, 0);
+    const disponible = 100 - pesoActualTotal;
+    if (pesoNum > disponible) {
+      throw new ErrorDeReglas(`Los pesos no pueden sumar más de 100 % (te quedan ${disponible} %).`);
+    }
+
+    // 6. Crear objeto y guardar
+    const nuevaEvaluacion = {
+      id: this.#siguienteId++,
+      nombre: nombreLimpio,
+      peso: pesoNum,
+      nota: notaValida
+    };
+
+    this.#evaluaciones.push(nuevaEvaluacion);
+    this.#cambio();
+
+    return nuevaEvaluacion;
+  }
   // ---------------------------------------------------------------- 2B · Calificar y eliminar
   calificar(id, nota) {
     // TODO 2B: la nota puede ser null (quitar) o un número entre 0 y 5. Si el id no existe → ErrorDeReglas.
