@@ -6,10 +6,10 @@ import { NotasVista } from './vista.js';
 import { NotasControlador } from './controlador.js';
 import { AlmacenLocal } from './almacen.js';
 import { TermometroVista } from './termometro-vista.js';
+import { AlmacenLocal, AlmacenSesion } from './almacen.js';
 
 // 1. El Modelo, con el almacén que elijamos.
-const modelo = new NotasModelo(new AlmacenLocal('notas.v1'));
-
+const modelo = new NotasModelo(new AlmacenSesion('notas.v1'));
 // 2. La Vista: recibe el Modelo para poder LEERLO y suscribirse a sus cambios.
 const vista = new NotasVista(document.getElementById('app'), modelo);
 

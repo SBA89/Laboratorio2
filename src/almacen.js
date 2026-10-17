@@ -45,3 +45,20 @@ export class AlmacenLocal {
     localStorage.setItem(this.#clave, JSON.stringify(evaluaciones));
   }
 }
+
+export class AlmacenSesion {
+  #clave;
+
+  constructor(clave) {
+    this.#clave = clave;
+  }
+
+  cargar() {
+    const texto = sessionStorage.getItem(this.#clave);
+    return texto ? JSON.parse(texto) : null;
+  }
+
+  guardar(datos) {
+    sessionStorage.setItem(this.#clave, JSON.stringify(datos));
+  }
+}
